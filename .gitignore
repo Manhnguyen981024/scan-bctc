@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# virtualenv
+venv/
+.env/
+.envrc
+
+# pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# distribution
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# cache
+.cache/
+.pytest_cache/
+
+# secrets
+.env
