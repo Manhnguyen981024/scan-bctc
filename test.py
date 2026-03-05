@@ -23,6 +23,7 @@ from vnstock import Vnstock
 from pprint import pprint
 import pandas as pd
 import numpy as np
+from constants import *
 
 def get_ratio(df, item_id, quarter="2025-Q4"):
     row = df[df["item_id"] == item_id]
@@ -30,22 +31,9 @@ def get_ratio(df, item_id, quarter="2025-Q4"):
         return float(row.iloc[0][quarter])
     return None
 
-
-important_keys = [
-    "trailing_eps",
-    "p_e",
-    "p_b",
-    "roe_trailling",
-    "roa_trailling",
-    "net_profit_margin",
-    "net_revenue",
-    "profit_after_tax_for_shareholders_of_the_parent_company"
-]
-quarters = ["2025-Q1", "2025-Q2", "2025-Q3", "2025-Q4"]
-
 ratio_dict = {}
 
-stock = Vnstock().stock(symbol="HPG", source="KBS")
+stock = Vnstock().stock(symbol="STB", source=DATA_SOURCE)
 
 ratio = stock.finance.ratio()
 
@@ -54,8 +42,10 @@ result = {}
 for _, row in ratio.iterrows():
 
     key = row["item_id"]
+    
+    quarters = [c for c in ratio.columns if "Q" in c]
 
-    if key in important_keys:
+    if key in IMPORTANT_KEYS:
 
         result[key] = {}
 
@@ -82,15 +72,11 @@ print("EPS Growth:", round(eps_growth * 100, 2), "%")
 print("PE:", pe)
 print("PEG:", round(peg, 2))
 
-steel_stocks = ["HPG", "HSG", "NKG", "TVN", "SMC"]
-
-
-
 pes = []
 
-for s in steel_stocks:
+for s in BANK_STOCKS:
 
-    stock = Vnstock().stock(symbol=s, source="KBS")
+    stock = Vnstock().stock(symbol=s, source=DATA_SOURCE)
 
     ratio = stock.finance.ratio()
 
@@ -105,7 +91,7 @@ for s in steel_stocks:
 
     pes.append(pe_avg)
 
-industry_pe = sum(pes) / len(pes)
+industry_pe = np.median(pes)
 
 print("Steel Industry PE:", round(industry_pe, 2))
 
