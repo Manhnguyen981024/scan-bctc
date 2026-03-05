@@ -22,6 +22,7 @@ os.environ["https_proxy"] = ""
 from vnstock import Vnstock
 from pprint import pprint
 import pandas as pd
+import numpy as np
 
 def get_ratio(df, item_id, quarter="2025-Q4"):
     row = df[df["item_id"] == item_id]
@@ -81,5 +82,31 @@ print("EPS Growth:", round(eps_growth * 100, 2), "%")
 print("PE:", pe)
 print("PEG:", round(peg, 2))
 
+steel_stocks = ["HPG", "HSG", "NKG", "TVN", "SMC"]
 
 
+
+pes = []
+
+for s in steel_stocks:
+
+    stock = Vnstock().stock(symbol=s, source="KBS")
+
+    ratio = stock.finance.ratio()
+
+   # lấy tất cả cột quý
+    quarters = [c for c in ratio.columns if "Q" in c]
+    
+    pe_row = ratio[ratio["item_id"] == "p_e"]
+
+    pe_values = [pe_row[q].values[0] for q in quarters]
+
+    pe_avg = sum(pe_values) / len(pe_values)
+
+    pes.append(pe_avg)
+
+industry_pe = sum(pes) / len(pes)
+
+print("Steel Industry PE:", round(industry_pe, 2))
+
+print("Industry PE:", industry_pe)
